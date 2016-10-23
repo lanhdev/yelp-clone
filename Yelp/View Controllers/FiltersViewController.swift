@@ -21,7 +21,7 @@ class FiltersViewController: UIViewController {
   let sortTitle = ["Best Match", "Distance", "Highest Rated"]
   let sortValue = [0, 1, 2]
   var sortDefault = "Best Match"
-
+  
   let categories = [["name" : "African", "code": "african"],
                     ["name" : "American, New", "code": "newamerican"],
                     ["name" : "American, Traditional", "code": "tradamerican"],
@@ -61,7 +61,13 @@ class FiltersViewController: UIViewController {
   var distanceSwitchStates = [Int: Bool]()
   var sortSwitchStates = [Int: Bool]()
   var categorySwitchStates = [Int: Bool]()
-
+  
+  var distanceSelected: Bool = false
+  var distanceSelectedRow: Int = 0
+  
+  var sortSelected: Bool = false
+  var sortSelectedRow: Int = 0
+  
   
   weak var delegate: FiltersViewControllerDelegate?
   
@@ -97,7 +103,7 @@ class FiltersViewController: UIViewController {
     var sortFilters = Int()
     
     let deal = dealSwitchStates
-
+    
     for (row, isSelected) in distanceSwitchStates {
       if isSelected {
         distanceFilters = distanceValue[row]
@@ -109,7 +115,7 @@ class FiltersViewController: UIViewController {
         sortFilters = sortValue[row]
       }
     }
-
+    
     for (row, isSelected) in categorySwitchStates {
       if isSelected {
         categoryFilters.append(categories[row]["code"]!)
@@ -212,6 +218,35 @@ extension FiltersViewController: UITableViewDataSource, UITableViewDelegate, Swi
     }
   }
   
+  func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    switch indexPath.section {
+    case 0:
+      return 44
+    case 1:
+      if indexPath.row != distanceSelectedRow {
+        if distanceSelected {
+          return 44
+        } else {
+          return 0
+        }
+      } else {
+        return 44
+      }
+    case 2:
+      if indexPath.row != sortSelectedRow {
+        if sortSelected {
+          return 44
+        } else {
+          return 0
+        }
+      } else {
+        return 44
+      }
+    default:
+      return 44
+    }
+  }
+  
   func dealCell(dealCell: DealCell, didChangeValue value: Bool) {
     dealSwitchStates = value
     print("filtersVC has got signal from deal switch cell")
@@ -220,12 +255,26 @@ extension FiltersViewController: UITableViewDataSource, UITableViewDelegate, Swi
   func distanceCell(distanceCell: DistanceCell, didChangeValue value: Bool) {
     let indexPath = tableView.indexPath(for: distanceCell)
     distanceSwitchStates[(indexPath?.row)!] = value
+    if distanceSelected {
+      distanceSelectedRow = (indexPath?.row)!
+      distanceSelected = false
+    } else {
+      distanceSelected = true
+    }
+    tableView.reloadSections(IndexSet(integer: 1), with: .automatic)
     print("filtersVC has got signal from distance switch cell")
   }
   
   func sortCell(sortCell: SortCell, didChangeValue value: Bool) {
     let indexPath = tableView.indexPath(for: sortCell)
     sortSwitchStates[(indexPath?.row)!] = value
+    if sortSelected {
+      sortSelectedRow = (indexPath?.row)!
+      sortSelected = false
+    } else {
+      sortSelected = true
+    }
+    tableView.reloadSections(IndexSet(integer: 2), with: .automatic)
     print("filtersVC has got signal from sort switch cell")
   }
   
