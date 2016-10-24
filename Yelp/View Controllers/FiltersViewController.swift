@@ -65,10 +65,6 @@ class FiltersViewController: UIViewController {
   var distanceSelected: Bool = false
   var distanceSelectedRow: Int = 0
   
-  var sortSelected: Bool = false
-  var sortSelectedRow: Int = 0
-  
-  
   weak var delegate: FiltersViewControllerDelegate?
   
   struct data {
@@ -194,11 +190,6 @@ extension FiltersViewController: UITableViewDataSource, UITableViewDelegate, Swi
     case 3:
       let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchCell") as! SwitchCell
       cell.categoryLabel.text = categories[indexPath.row]["name"]
-      //    if switchStates[indexPath.row] != nil {
-      //      cell.switchButton.isOn = switchStates[indexPath.row]!
-      //    } else {
-      //      cell.switchButton.isOn = false
-      //    }
       cell.switchButton.isOn = categorySwitchStates[indexPath.row] ?? false
       cell.delegate = self
       return cell
@@ -232,16 +223,6 @@ extension FiltersViewController: UITableViewDataSource, UITableViewDelegate, Swi
       } else {
         return 44
       }
-    case 2:
-      if indexPath.row != sortSelectedRow {
-        if sortSelected {
-          return 44
-        } else {
-          return 0
-        }
-      } else {
-        return 44
-      }
     default:
       return 44
     }
@@ -268,12 +249,6 @@ extension FiltersViewController: UITableViewDataSource, UITableViewDelegate, Swi
   func sortCell(sortCell: SortCell, didChangeValue value: Bool) {
     let indexPath = tableView.indexPath(for: sortCell)
     sortSwitchStates[(indexPath?.row)!] = value
-    if sortSelected {
-      sortSelectedRow = (indexPath?.row)!
-      sortSelected = false
-    } else {
-      sortSelected = true
-    }
     tableView.reloadSections(IndexSet(integer: 2), with: .automatic)
     print("filtersVC has got signal from sort switch cell")
   }
